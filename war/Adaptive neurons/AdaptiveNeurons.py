@@ -34,14 +34,8 @@ class AdalineGD(object):
         for i in range(self.n_iter):
             output = self.net_input(X)
             #output = w0 + w1*x1 + w2*x2 .... wn*xn
-            print(output)
-            input()
             errors = (y - output)
-            print(errors)
-            input()
             self.w_[1:] += self.eta * X.T.dot(errors)
-            print(self.w_[1:])
-            input()
             self.w_[0] += self.eta * errors.sum()
             cost = (errors ** 2).sum() / 2.0
             self.cost_.append(cost)
