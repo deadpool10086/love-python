@@ -1,5 +1,23 @@
 from math import log
+import matplotlib.pyplot as plt
 import operator
+
+decisionNode = dict(boxstyle = "sawtooth", fc="0.8")
+leafNode = dict(boxstyle = "round4", fc="0.8")
+arrow_args = dict(arrowstyle = "<-")
+
+def plotNode(nodeTxt, centerPt, parentPt, nodeType):
+    createPlot.axl.annotate(nodeTxt, xy=parentPt, xycoords= 'axes fraction',
+     xytext = centerPt, textcoords='axes fraction',
+     va = "center", ha="center", bbox=nodeType, arrowprops = arrow_args)
+def createPlot():
+    fig = plt.figure(1, facecolor='white')
+    fig.clf()
+    createPlot.axl = plt.subplot(111, frameon=False)
+    plotNode('a decision node', (0.5, 0.1), (0.1, 0.5), decisionNode)
+    plotNode('a leaf node', (0.8, 0.1), (0.3, 0.8), leafNode)
+    plt.show()
+
 def calcShannonEnt(dataSet):
     numEntries = len(dataSet)
     labelCounts = {}
@@ -57,17 +75,43 @@ def createTree(dataSet, labels):
     if len(dataSet[0]) == 1:
         return majorityCnt(classList)
     bestFeat = chooseBestFeatureToSplit(dataSet)
-    print(bestFeat)
+    # print(bestFeat)
     bestFeatLabel = labels[bestFeat]
     myTree = {bestFeatLabel:{}}
-    print("before",labels)
     del(labels[bestFeat])
-
     featValues = [example[bestFeat] for example in dataSet]
     uniqueVals = set(featValues)
     for value in uniqueVals:
         subLabels = labels[:]
         myTree[bestFeatLabel][value] = createTree(splitDataSet(dataSet, bestFeat,value),
          subLabels)
-    print("after",labels)
     return myTree
+
+def getNumLeafs(myTree):
+    numLeafs = 0;
+#    print(myTree)
+    firstStr = list(myTree.keys())[0]
+#    print(firstStr)
+    secondDict = myTree[firstStr]
+#    print(secondDict)
+#    input();
+    for key in secondDict.keys():       #计数如果是字典就进去，不是就+1
+        if type(secondDict[key]).__name__ == 'dict':
+            numLeafs += getNumLeafs(secondDict[key])
+        else: numLeafs += 1
+    return numLeafs
+def getTreeDepth(myTree):
+    maxDepth = 0
+    firstStr = list(myTree.keys())[0]
+    secondDict = myTree[firstStr]
+    for key in secondDict.keys():
+        if type(secondDict[key]).__name__ == 'dict':
+            thisDepth = 1 + getTreeDepth(secondDict[key])
+        else: thisDepth = 1
+        if thisDepth > maxDepth: maxDepth = thisDepth
+    return maxDepth
+def retrieveTree(i):
+    listOfTrees = [{'no surfacing':{0:'no',1:{'flippers': {0:'no', 1:'yes'}}}},\
+    {'no surfacing': {0:'no',1:{'flippers': \
+    {0:{'head':{0:'no',1:'yes'}}, 1:'no'}}}}]
+    return listOfTrees[i]
