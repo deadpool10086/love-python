@@ -36,8 +36,6 @@ class AdalineGD(object):
             #output = w0 + w1*x1 + w2*x2 .... wn*xn
             errors = (y - output)
             self.w_[1:] += self.eta * X.T.dot(errors)
-            print(errors)
-            input();
             self.w_[0] += self.eta * errors.sum()
             cost = (errors ** 2).sum() / 2.0
             self.cost_.append(cost)
@@ -50,7 +48,7 @@ class AdalineGD(object):
         return np.where(self.activation(X) >= 0, 1, -1)
 
 
-df = pd.read_csv("D:\pywork\war\data.csv", header=None)
+df = pd.read_csv("E:\pyBusiness\war\data.csv", header=None)
 y = df.iloc[0:100, 4].values
 y = np.where(y == 'Iris-setosa',-1,1)
 X = df.iloc[0:100,[0,2]].values
